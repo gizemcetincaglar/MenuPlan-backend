@@ -34,7 +34,12 @@ public static class SeedData
                 Email = superAdminEmail,
                 FullName = "Super Admin",
             };
-            await userManager.CreateAsync(superAdmin, superAdminPassword);
+            var created = await userManager.CreateAsync(superAdmin, superAdminPassword);
+            if (!created.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    "SuperAdmin oluşturulamadı: " + string.Join("; ", created.Errors.Select(e => e.Description)));
+            }
             await userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
         }
 
